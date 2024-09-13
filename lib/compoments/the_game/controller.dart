@@ -9,7 +9,7 @@ class Controller {
   static const int cols = 40;
   List<List<bool>> grid = List.generate(rows, (_) => List.filled(cols, false));
   final Random _random = Random();
-  int _maxGenerations = 100;
+  int _maxGenerations = 1000;
   int _actualGeneration = 1;
 
   final _generations = BehaviorSubject<GameState>();

@@ -31,7 +31,7 @@ class TheGame extends StatelessWidget {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    controller.start(10);
+                    controller.start(100);
                   },
                   child: const Text("Iniciar"),
                 ),
@@ -54,7 +54,7 @@ class TheGame extends StatelessWidget {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    controller.start(10);
+                    controller.start(100);
                   },
                   child: const Text("Reiniciar"),
                 ),
@@ -96,21 +96,27 @@ class _Grid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-      shrinkWrap: true,
-      itemCount: 40 * 20,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 40,
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
       ),
-      itemBuilder: (BuildContext context, int index) {
-        bool isBlack = state.isAlive(index);
-        return Container(
-          decoration: BoxDecoration(
-            color: isBlack ? Colors.black : Colors.white,
-            border: Border.all(color: Colors.grey),
-          ),
-        );
-      },
+      elevation: 10.0,
+      child: GridView.builder(
+        shrinkWrap: true,
+        itemCount: 40 * 20,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 40,
+        ),
+        itemBuilder: (BuildContext context, int index) {
+          bool isBlack = state.isAlive(index);
+          return Container(
+            decoration: BoxDecoration(
+              color: isBlack ? Colors.black : Colors.white,
+              border: Border.all(color: Colors.grey),
+            ),
+          );
+        },
+      ),
     );
   }
 }

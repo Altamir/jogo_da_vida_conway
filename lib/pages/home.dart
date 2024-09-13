@@ -21,19 +21,31 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    final tela = MediaQuery.of(context).size.width;
+    const double max = 920;
+    final double boxSizeW = tela > max ? max : tela;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('Jogo da vida'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            const HeaderText(),
-            TheGame(controller: _controller),
-          ],
+      body: Center(
+        child: SizedBox(
+          width: boxSizeW,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              const HeaderText(),
+              TheGame(controller: _controller),
+
+              Padding(
+                padding: const EdgeInsets.all(18.0),
+                child: ElevatedButton(onPressed: (){}, child: const Text("Quais as regras?")),
+              )
+            ],
+          ),
         ),
       ),
     );
