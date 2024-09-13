@@ -12,6 +12,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final game.Controller _controller = game.Controller();
+  ElementView elementView = ElementView.sobre;
 
   @override
   Future dispose() async {
@@ -37,17 +38,77 @@ class _HomeState extends State<Home> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              const HeaderText(),
-              TheGame(controller: _controller),
-
-              Padding(
-                padding: const EdgeInsets.all(18.0),
-                child: ElevatedButton(onPressed: (){}, child: const Text("Quais as regras?")),
-              )
+              ChoiceViewElement(onElementChange: (element) {
+                setState(() {
+                  elementView = element;
+                });
+              }),
+              Visibility(
+                visible: elementView == ElementView.sobre,
+                child: const HeaderText(),
+              ),
+              Visibility(
+                visible: elementView == ElementView.game,
+                child: TheGame(controller: _controller),
+              ),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+enum ElementView { sobre, game, regras }
+
+class ChoiceViewElement extends StatefulWidget {
+  const ChoiceViewElement({super.key, required this.onElementChange});
+
+  final void Function(ElementView)? onElementChange;
+
+  @override
+  State<ChoiceViewElement> createState() => _ChoiceViewElementState();
+}
+
+class _ChoiceViewElementState extends State<ChoiceViewElement> {
+  ElementView elementView = ElementView.sobre;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: SegmentedButton<ElementView>(
+          segments: const <ButtonSegment<ElementView>>[
+            ButtonSegment<ElementView>(
+              value: ElementView.sobre,
+              label: Text("Sobre"),
+              icon: Icon(Icons.folder),
+              enabled: true,
+            ),
+            ButtonSegment<ElementView>(
+              value: ElementView.regras,
+              label: Text("Regras"),
+              icon: Icon(Icons.security),
+              enabled: true,
+            ),
+            ButtonSegment<ElementView>(
+              value: ElementView.game,
+              label: Text("Game"),
+              icon: Icon(Icons.gamepad),
+              enabled: true,
+            ),
+          ],
+          selected: <ElementView>{
+            elementView
+          },
+          onSelectionChanged: (selected) {
+            setState(() {
+              elementView = selected.first;
+              if (widget.onElementChange != null) {
+                widget.onElementChange!(selected.first);
+              }
+            });
+          }),
     );
   }
 }
