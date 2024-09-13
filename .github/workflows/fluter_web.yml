@@ -1,0 +1,47 @@
+name: "Build and Realease"
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4 
+      
+      - name: Configura o Java
+        uses: actions/setup-java@v3.12.0
+        with:
+          distribution: 'oracle'
+          java-version: '17'   
+      
+      - name: Configura flutter Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.22.2'
+          channel: 'stable'
+          
+      - name: Futter version
+        run: flutter --version
+
+      - name: Obtendo dependencias
+        run: flutter pub get
+
+      - name: build
+        run: flutter build web
+
+      - name: Delpoy 
+        uses: cloudflare/pages-action@v1.5.0
+        with:         
+          apiToken: ${{ secrets.CLOUD_FLARE_TOKEN }}          
+          accountId: ${{ secrets.CLOUD_FLARE_ACCOUNT_ID }}
+          # The name of the Pages project to upload to
+          projectName: jogo_coway.altamir.dev        
+          directory: build/web       
+   
+
+      
