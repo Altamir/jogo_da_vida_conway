@@ -15,82 +15,119 @@ class TheGame extends StatelessWidget {
         initialData: controller.initialState,
         builder: (context, snapshot) {
           IGameState state = snapshot.data!;
-
-          if (state is GameStateInitial) {
-          return Column(
-              children: [
-                const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Text(
-                    "Inicie uma nova geração para o Game",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    controller.start(100);
-                  },
-                  child: const Text("Iniciar"),
-                ),
-              ],
-            );
-          }
-
-          if (state is GameStateFinish) {
-            return Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    "Geração: ${state.actualGeneration} / ${state.finalGeneration}",
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    controller.start(100);
-                  },
-                  child: const Text("Reiniciar"),
-                ),
-                _Grid(
-                  state: state,
-                ),
-              ],
-            );
-          }
-
-          if (state is GameState) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    "Geração: ${state!.actualGeneration} / ${state.finalGeneration}",
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                _Grid(state: state),
-              ],
-            );
-          }
-
-          return const Text("Algo que não devia acontecer acontecei");
+          return switch (snapshot.data) {
+            GameStateInitial() => UIGameInitialState(controller: controller),
+            GameStateFinish() => UIGameStateFinish(
+                state: state as GameStateFinish, controller: controller),
+            GameState() => UIGameState(state: state as GameState),
+            _ => const Text("Algo que não devia acontecer acontecei")
+          };
         });
   }
 }
 
+class UIGameState extends StatelessWidget {
+  const UIGameState({
+    super.key,
+    required this.state,
+  });
+
+  final GameState state;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            "Geração: ${state.actualGeneration} / ${state.finalGeneration}",
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        _Grid(state: state),
+      ],
+    );
+  }
+}
+
+class UIGameStateFinish extends StatelessWidget {
+  const UIGameStateFinish({
+    super.key,
+    required this.state,
+    required this.controller,
+  });
+
+  final GameStateFinish state;
+  final Controller controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            "Geração: ${state.actualGeneration} / ${state.finalGeneration}",
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            controller.start(100);
+          },
+          child: const Text("Reiniciar"),
+        ),
+        _Grid(
+          state: state,
+        ),
+      ],
+    );
+  }
+}
+
+class UIGameInitialState extends StatelessWidget {
+  const UIGameInitialState({
+    super.key,
+    required this.controller,
+  });
+
+  final Controller controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Text(
+            "Inicie uma nova geração para o Game",
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            controller.start(100);
+          },
+          child: const Text("Iniciar"),
+        ),
+      ],
+    );
+  }
+}
+
 class _Grid extends StatelessWidget {
-  const _Grid({super.key, required this.state});
+  const _Grid({required this.state});
 
   final IGameState state;
 

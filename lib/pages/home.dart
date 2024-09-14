@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:jogo_da_vida/compoments/regras/regras_game.dart';
 import 'package:jogo_da_vida/compoments/the_game/controller.dart' as game;
-import 'package:jogo_da_vida/widgets/header_text_life_game.dart';
+import 'package:jogo_da_vida/compoments/about/about_life_game.dart';
 import 'package:jogo_da_vida/compoments/the_game/ui.dart';
 
 class Home extends StatefulWidget {
@@ -31,27 +32,33 @@ class _HomeState extends State<Home> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('Jogo da vida'),
       ),
-      body: Center(
-        child: SizedBox(
-          width: boxSizeW,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              ChoiceViewElement(onElementChange: (element) {
-                setState(() {
-                  elementView = element;
-                });
-              }),
-              Visibility(
-                visible: elementView == ElementView.sobre,
-                child: const HeaderText(),
-              ),
-              Visibility(
-                visible: elementView == ElementView.game,
-                child: TheGame(controller: _controller),
-              ),
-            ],
+      body: SingleChildScrollView(
+        child: Center(
+          child: SizedBox(
+            width: boxSizeW,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                ChoiceViewElement(onElementChange: (element) {
+                  setState(() {
+                    elementView = element;
+                  });
+                }),
+                Visibility(
+                  visible: elementView == ElementView.sobre,
+                  child: const HeaderText(),
+                ),
+                Visibility(
+                  visible: elementView == ElementView.game,
+                  child: TheGame(controller: _controller),
+                ),
+                Visibility(
+                  visible: elementView == ElementView.regras,
+                  child: const JogoDaVidaWidget(),
+                ),
+              ],
+            ),
           ),
         ),
       ),
